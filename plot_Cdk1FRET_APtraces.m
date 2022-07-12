@@ -1,28 +1,8 @@
     
 
 % load the image data
-% high temp embryos about 25 degrees
-exp_date = '20191220B';
-wave_frames = 480:520; % for 20191220B
-t_trim = 10;
 
-% low temp, about 14 degrees
-% exp_date = '20200220';
-% wave_frames = 1090:1260; % for 20200220
-% t_trim = 80;
-
-% low temp, about 13 degrees
-% exp_date = '20200130B';
-% wave_frames = 775:840;
-% t_trim = 10;
-
-
-% = 920:1050; % for 20200227
-% t_trim = 70
-
-load(strcat('D:\Luke\Projects\LDH006_FRET_sensor_temperature\microscopy\FRET-hom_his_unk\04_20x_air\',exp_date,'\stitched\',exp_date,'_data.mat'));
-load(strcat('D:\Luke\Projects\LDH006_FRET_sensor_temperature\microscopy\FRET-hom_his_unk\04_20x_air\',exp_date,'\stitched\',exp_date,'_analysis.mat'));
-load(strcat('D:\Luke\Projects\LDH006_FRET_sensor_temperature\microscopy\FRET-hom_his_unk\04_20x_air\',exp_date,'\stitched\',exp_date,'_aux.mat'));
+wave_frames = 480:520; 
 
 cir = data.cir;
 yfp = data.yfp;
@@ -58,7 +38,7 @@ end
 
 
 % plotting
-t = numel(FRETratio_AP(:,1))-t_trim;
+t = numel(FRETratio_AP(:,1));
 
 fig = figure;
 step = 60/dt; % for 1 frame per minute
@@ -68,9 +48,8 @@ colormap(cmap)
 r = 4:16;
 for j = 1:numel(range)
     f = FRETratio_AP(round(range(j)),r);
-%     plot(sgolayfilt(f,3,5),'color',cmap(j,:),'LineWidth',2);
-    plot(sgolayfilt(f-mean(f),3,5),'color',cmap(j,:),'LineWidth',2);
-%                 pause
+%     plot(sgolayfilt(f,3,5),'color',cmap(j,:),'LineWidth',2); % for normal acivity
+    plot(sgolayfilt(f-mean(f),3,5),'color',cmap(j,:),'LineWidth',2); % for rescaled activity
     hold on;
 end
 xlim([1, 13]);
@@ -85,12 +64,5 @@ c.Label.String = 'Time (min.)';
 c.Label.FontSize = 20;
 c.Ticks = [0, 0.2, 0.4, 0.6, 0.8, 1];
 c.TickLabels = floor(linspace(0, t*dt/60, 6));
-
-
-ylim([-0.05, 0.05]);
-% FigName = strcat('figures\Cdk1FRET_APtraces_',exp_date);
-FigName = strcat('figures\Cdk1FRET_APtraces_',exp_date,'_normalized_difference');
-standardizePlot_colorbar(gcf,gca,c,FigName);
-close(fig);
 
 
